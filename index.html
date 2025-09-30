@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light Cavarly W.T.C: Гарантия победы</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="manifest" href="./manifest.json"> 
+    <style>
+        /* Глобальные переменные для цвета */
+        :root {
+            --primary-color: #ffcc00; /* Ярко-желтый */
+            --secondary-color: #000000; /* Черный */
+            --background-color: #111111; /* Темно-серый фон контейнера */
+            --text-color: #ffffff; /* Белый/Светлый текст */
+            --highlight-text: #00ff00; /* Зеленый для скрытых символов */
+            --mention-text: #00ffff; /* Голубой для упоминаний */
+            --compare-text: #ff7f00; /* Оранжевый для сравнения */
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            font-family: 'Oswald', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 5px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .container {
+            background-color: var(--background-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            padding: 15px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.8);
+        }
+
+        .description {
+            color: #cccccc;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        /* Стили для вкладок */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap; 
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--primary-color);
+        }
+
+        .tab-button {
+            flex-grow: 1;
+            padding: 10px 0;
+            background-color: #222222;
+            color: var(--primary-color);
+            border: none;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            cursor: pointer;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.9em; 
+            text-transform: uppercase;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            text-align: center;
+            border-right: 1px solid #111;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: relative;
+            min-width: 25%; 
+            line-height: 1.1;
+        }
+
+        .tab-button:nth-child(2) {
+            border-right: 1px solid #111;
+        }
+        .tab-button:nth-child(4) {
+             border-right: none;
+        }
+
+
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border-bottom: 1px solid var(--primary-color);
+            cursor: default;
+        }
+
+        .tab-button:not(.active):hover {
+            background-color: #333333;
+            color: var(--text-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        textarea {
+            width: calc(100% - 16px);
+            height: 120px; 
+            background-color: #222222;
+            color: var(--text-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 3px;
+            padding: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            resize: vertical;
+            margin-bottom: 10px; 
+        }
+        
+        .input-group label {
+            color: var(--compare-text);
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+
+        /* Контейнер для кнопок внутри вкладок */
+        .button-group {
+            display: flex;
+            gap: 10px; 
+            margin-bottom: 15px;
+        }
+
+        .button-group button {
+            width: 100%;
+            flex-grow: 1;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 3px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1em;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #e6b800; 
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+        }
+        
+        /* Кнопка "Копировать" */
+        .copy-button {
+            background-color: #333333 !important;
+            color: var(--primary-color) !important;
+            border: 1px solid var(--primary-color);
+            margin-top: 10px;
+        }
+
+        .copy-button:hover {
+            background-color: #555555 !important;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+        }
+        
+        /* Кнопка "Очистить" */
+        .clear-button {
+            background-color: #440000 !important;
+            color: var(--primary-color) !important;
+            border: 1px solid var(--primary-color);
+        }
+        
+        .clear-button:hover {
+             background-color: #660000 !important;
+             box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+        }
+
+        .results-container {
+            margin-top: 20px;
+            border: 1px solid #b38f00; 
+            border-radius: 4px;
+            padding: 8px;
+            background-color: #111111;
+            min-height: 70px;
+        }
+
+        .results-container p:first-child {
+            color: #ffea7f; 
+            margin-bottom: 5px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.95em;
+        }
+
+        .result-block {
+            background-color: #2a2a00; 
+            border: 1px solid var(--primary-color);
+            border-radius: 3px;
+            padding: 8px;
+            margin-bottom: 8px;
+            color: var(--text-color); 
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.88em;
+            word-wrap: break-word;
+            box-shadow: 0 0 5px rgba(255, 204, 0, 0.4);
+        }
+        
+        /* Цвета для разных функций */
+        .result-block.compare-found { 
+            background-color: #331a00; 
+            color: var(--compare-text);
+            border-color: var(--compare-text);
+        }
+        .result-block.hidden-char {
+            background-color: #002a2a; 
+            color: var(--highlight-text);
+            border-color: var(--highlight-text);
+        }
+
+        .result-block.mention-found { 
+            background-color: #002020; 
+            color: var(--mention-text); 
+            border-color: var(--mention-text); 
+        }
+
+        .result-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .owner {
+            text-align: center;
+            margin-top: 20px;
+            color: #999999;
+            font-size: 0.8em;
+        }
+        
+        /* Стили модальных окон (для обводок) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            padding-top: 50px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background-color: #111111;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid var(--primary-color);
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+            position: relative;
+        }
+
+        .close-button {
+            color: var(--primary-color);
+            font-size: 30px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .highlighted-text {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: var(--text-color);
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 60vh;
+            overflow-y: auto;
+            border: 1px solid #444400; 
+            padding: 10px;
+            background-color: #080800;
+            border-radius: 5px;
+        }
+        /* Обводка для скрытых символов */
+        .highlighted-text .highlighted-char {
+            background-color: rgba(0, 255, 0, 0.3);
+            border: 1px solid var(--highlight-text);
+            border-radius: 2px;
+            padding: 0 1px;
+            line-height: 1.5;
+            display: inline-block;
+        }
+        /* Обводка для упоминаний */
+        .highlighted-text .highlighted-char.mention {
+            background-color: rgba(0, 255, 255, 0.3);
+            border: 1px solid var(--mention-text);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Light Cavarly W.T.C</h1>
+        <p class="description">Гарантия победы. (4 базовые функции)</p>
+
+        <div class="tabs">
+             <button class="tab-button active" onclick="openTab(event, 'compare')">
+                Сравнение Текстов 
+            </button>
+            <button class="tab-button" onclick="openTab(event, 'repetitions')">
+                Поиск Повторений 
+            </button>
+            <button class="tab-button" onclick="openTab(event, 'hidden-chars')">
+                Поиск Скрытия 
+            </button>
+            <button class="tab-button" onclick="openTab(event, 'mentions')">
+                Поиск Упоминаний 
+            </button>
+        </div>
+
+        <div id="compare" class="tab-content active">
+            <div class="input-group">
+                <label for="inputTextOriginal">Текст 1 (Оригинал):</label>
+                <textarea id="inputTextOriginal" placeholder="Вставь первый текст для сравнения..."></textarea>
+            </div>
+             <div class="input-group">
+                <label for="inputTextRewrite">Текст 2 (Подозрительный):</label>
+                <textarea id="inputTextRewrite" placeholder="Вставь второй текст для проверки на сходство..."></textarea>
+            </div>
+            <div class="button-group">
+                <button onclick="findRewrite()">Сравнить Тексты</button>
+                <button class="clear-button" onclick="clearInputs('inputTextOriginal', 'inputTextRewrite')">Очистить Оба</button>
+            </div>
+            <div class="results-container" id="outputResultsRewrite">
+                <p>Результаты сравнения:</p>
+            </div>
+            <button class="copy-button" onclick="copyResults('outputResultsRewrite', true)">Копировать результаты</button>
+        </div>
+
+
+        <div id="repetitions" class="tab-content">
+            <textarea id="inputTextRepetitions" placeholder="Вставь сюда текст для поиска повторений..."></textarea>
+            <div class="button-group">
+                <button onclick="findRepetitions()">Найти повторения</button>
+                <button class="clear-button" onclick="clearInput('inputTextRepetitions')">Очистить</button>
+            </div>
+            <div class="results-container" id="outputResultsRepetitions">
+                <p>Результаты поиска:</p>
+            </div>
+            <button class="copy-button" onclick="copyResults('outputResultsRepetitions', true)">Копировать результаты</button>
+        </div>
+
+        <div id="hidden-chars" class="tab-content">
+            <textarea id="inputTextHiddenChars" placeholder="Вставь сюда текст для поиска английских букв и скрытых символов..."></textarea>
+            <div class="button-group">
+                <button onclick="findHiddenChars()">Найти скрытия</button>
+                <button class="clear-button" onclick="clearInput('inputTextHiddenChars')">Очистить</button>
+            </div>
+            <div class="results-container" id="outputResultsHiddenChars">
+                <p>Результаты поиска (отображается только краткий список, полный текст с обводкой появится в новом окне):</p>
+            </div>
+             <button class="copy-button" onclick="copyResults('outputResultsHiddenChars', true)">Копировать результаты</button>
+        </div>
+
+        <div id="mentions" class="tab-content">
+            <textarea id="inputTextMentions" placeholder="Вставь сюда текст для поиска упоминаний..."></textarea>
+            <div class="button-group">
+                <button onclick="findMentions()">Найти упоминания</button>
+                <button class="clear-button" onclick="clearInput('inputTextMentions')">Очистить</button>
+            </div>
+            <div class="results-container" id="outputResultsMentions">
+                <p>Результаты поиска (отображается только краткий список, полный текст с обводкой появится в новом окне):</p>
+            </div>
+            <button class="copy-button" onclick="copyResults('outputResultsMentions', true)">Копировать результаты</button>
+        </div>
+        
+
+        <p class="owner">Owner By. Barth & Akimov</p>
+    </div>
+
+    <div id="hiddenCharsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('hiddenCharsModal')">&times;</span>
+            <h2 style="color: var(--highlight-text); text-align: center; margin-bottom: 15px; font-size: 1.5em;">Обнаруженные скрытия</h2>
+            <div id="highlightedTextDisplay" class="highlighted-text"></div>
+        </div>
+    </div>
+
+    <div id="mentionsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('mentionsModal')">&times;</span>
+            <h2 style="color: var(--mention-text); text-align: center; margin-bottom: 15px; font-size: 1.5em;">Обнаруженные упоминания</h2>
+            <div id="highlightedMentionsDisplay" class="highlighted-text"></div>
+        </div>
+    </div>
+    
+    <script>
+        // --- Глобальные вспомогательные функции ---
+
+        function clearInput(textareaId) {
+            document.getElementById(textareaId).value = '';
+        }
+        function clearInputs(id1, id2) {
+            document.getElementById(id1).value = '';
+            document.getElementById(id2).value = '';
+        }
+
+        function copyResults(resultsContainerId, stripHeader = false) {
+            const resultsContainer = document.getElementById(resultsContainerId);
+            let textToCopy = '';
+
+            const blocks = Array.from(resultsContainer.children).filter(el => el.classList.contains('result-block'));
+            if (blocks.length === 0) {
+                 alert('Нет результатов для копирования!');
+                 return;
+            }
+            textToCopy = blocks.map(block => block.innerText.trim()).join('\n');
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('Результаты скопированы в буфер обмена!');
+            }).catch(err => {
+                console.error('Ошибка копирования:', err);
+                alert('Не удалось скопировать. Попробуйте вручную.');
+            });
+        }
+        
+        // ФУНКЦИЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК (ОСНОВА РАБОТЫ)
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active"); 
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.classList.add("active"); 
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const defaultTabButton = document.querySelector('.tab-button:first-child');
+            if (defaultTabButton) {
+                // Имитируем клик по первой кнопке, чтобы открыть первую вкладку при запуске
+                const event = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+                Object.defineProperty(event, 'currentTarget', { value: defaultTabButton, writable: true });
+                defaultTabButton.dispatchEvent(event); 
+            }
+        });
+
+        // ФУНКЦИЯ ЗАКРЫТИЯ МОДАЛЬНЫХ ОКОН (ИСПРАВЛЕНА)
+        window.onclick = function(event) {
+            const hiddenCharsModal = document.getElementById('hiddenCharsModal');
+            const mentionsModal = document.getElementById('mentionsModal');
+            
+            if (event.target == hiddenCharsModal) {
+                closeModal('hiddenCharsModal');
+            }
+            if (event.target == mentionsModal) {
+                closeModal('mentionsModal');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+        }
+        
+        // --- 1. Сравнение Текстов (findRewrite) ---
+        function findRewrite() {
+            const originalText = document.getElementById('inputTextOriginal').value;
+            const rewriteText = document.getElementById('inputTextRewrite').value;
+            const outputResults = document.getElementById('outputResultsRewrite');
+            outputResults.innerHTML = '<p style="color: #ffea7f; margin-bottom: 5px; font-family: \'Oswald\', sans-serif;">Результаты сравнения:</p>';
+            
+            if (!originalText.trim() || !rewriteText.trim()) {
+                outputResults.innerHTML += '<p style="color: yellow; font-family: sans-serif; font-size: 0.9em;">Введите оба текста для сравнения.</p>';
+                return;
+            }
+            
+            function cleanTextForShingles(text) {
+                return text.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s+/g, ' ').trim();
+            }
+
+            function getShingles(text, k = 3) {
+                const words = text.split(' ').filter(w => w.length > 0);
+                const shingles = new Set();
+                for (let i = 0; i <= words.length - k; i++) {
+                    shingles.add(words.slice(i, i + k).join(' '));
+                }
+                return shingles;
+            }
+
+            function jaccardSimilarity(setA, setB) {
+                if (setA.size === 0 && setB.size === 0) return 1;
+                const intersection = new Set([...setA].filter(x => setB.has(x)));
+                const unionSize = setA.size + setB.size - intersection.size;
+                return (unionSize === 0) ? 0 : (intersection.size / unionSize);
+            }
+            
+            const shingleSize = 3; 
+            
+            const cleanOriginal = cleanTextForShingles(originalText);
+            const cleanRewrite = cleanTextForShingles(rewriteText);
+
+            const shinglesOriginal = getShingles(cleanOriginal, shingleSize);
+            const shinglesRewrite = getShingles(cleanRewrite, shingleSize);
+
+            const similarity = jaccardSimilarity(shinglesOriginal, shinglesRewrite);
+            const similarityPercentage = (similarity * 100).toFixed(2);
+            
+            const threshold = 50; 
+            
+            let resultMessage = `Сходство: ${similarityPercentage}% (Шингл ${shingleSize} слов).`;
+            let cssClass = '';
+            
+            if (similarityPercentage >= threshold) {
+                resultMessage += ` ВНИМАНИЕ: Обнаружено значительное сходство в структуре! (Выше ${threshold}%)`;
+                cssClass = 'compare-found';
+            } else if (similarityPercentage > 20) {
+                 resultMessage += ` Обнаружено среднее сходство.`;
+            } else {
+                 resultMessage += ` Сходство не обнаружено.`;
+            }
+
+            outputResults.innerHTML += `
+                <div class="result-block ${cssClass}">
+                    ${resultMessage}
+                </div>
+            `;
+            
+            const intersection = new Set([...shinglesOriginal].filter(x => shinglesRewrite.has(x)));
+            if (intersection.size > 0) {
+                 outputResults.innerHTML += `
+                    <div class="result-block" style="background-color: #2a2a00; border-color: #ff7f00;">
+                        Совпавшие фразы (шинглы):<br>
+                        ${Array.from(intersection).join(' | ')}
+                    </div>
+                `;
+            }
+        }
+
+
+        // --- 2. Поиск Повторений ---
+        function findRepetitions() {
+            const inputText = document.getElementById('inputTextRepetitions').value;
+            const outputResults = document.getElementById('outputResultsRepetitions');
+            outputResults.innerHTML = '<p style="color: #ffea7f; margin-bottom: 5px; font-family: \'Oswald\', sans-serif;">Результаты поиска:</p>';
+
+            if (!inputText.trim()) {
+                outputResults.innerHTML += '<p style="color: yellow; font-family: sans-serif; font-size: 0.9em;">Пожалуйста, введите текст для анализа.</p>';
+                return;
+            }
+
+            const normalizedText = inputText.toLowerCase().replace(/\s+/g, ' ').trim();
+            const words = normalizedText.split(' ');
+
+            const minWords = 2;
+            const maxWords = 50; 
+
+            const phraseCounts = new Map();
+
+            for (let len = minWords; len <= maxWords && len <= words.length; len++) {
+                for (let i = 0; i <= words.length - len; i++) {
+                    const phraseArray = words.slice(i, i + len);
+                    const phrase = phraseArray.join(' ');
+                    
+                    if (phrase.trim().length === 0) continue;
+
+                    phraseCounts.set(phrase, (phraseCounts.get(phrase) || 0) + 1);
+                }
+            }
+
+            const uniqueRepetitions = new Map();
+
+            const sortedPhrases = Array.from(phraseCounts.entries())
+                                        .filter(([, count]) => count > 1)
+                                        .sort((a, b) => b[0].length - a[0].length);
+
+            for (const [phrase, count] of sortedPhrases) {
+                let isSubphraseOfExisting = false;
+                for (const existingPhrase of uniqueRepetitions.keys()) {
+                    if (existingPhrase.includes(phrase) && existingPhrase !== phrase) {
+                        isSubphraseOfExisting = true;
+                        break;
+                    }
+                }
+
+                if (!isSubphraseOfExisting) {
+                    uniqueRepetitions.set(phrase, count);
+                }
+            }
+            
+            if (uniqueRepetitions.size === 0) {
+                outputResults.innerHTML += '<p style="color: #ffcc00; font-family: sans-serif; font-size: 0.9em;">Точных повторений фраз не найдено.</p>';
+                return;
+            }
+
+            const displayResults = Array.from(uniqueRepetitions.entries())
+                                         .sort((a, b) => b[1] - a[1]);
+
+            displayResults.forEach(([text, count]) => {
+                const wordsInPhrase = text.split(' ').length;
+                outputResults.innerHTML += `
+                    <div class="result-block">
+                        "${text}" (x${count}) (${wordsInPhrase} Слов)
+                    </div>
+                `;
+            });
+        }
+
+        // --- 3. Поиск Скрытия ---
+        function findHiddenChars() {
+            const inputText = document.getElementById('inputTextHiddenChars').value;
+            const outputResults = document.getElementById('outputResultsHiddenChars');
+            const highlightedTextDisplay = document.getElementById('highlightedTextDisplay');
+            const hiddenCharsModal = document.getElementById('hiddenCharsModal');
+
+            outputResults.innerHTML = '<p style="color: #ffea7f; margin-bottom: 5px; font-family: \'Oswald\', sans-serif;">Результаты поиска (отображается только краткий список, полный текст с обводкой появится в новом окне):</p>';
+            highlightedTextDisplay.innerHTML = '';
+
+            if (!inputText.trim()) {
+                outputResults.innerHTML += '<p style="color: yellow; font-family: sans-serif; font-size: 0.9em;">Пожалуйста, введите текст для анализа.</p>';
+                return;
+            }
+
+            const foundCharsDetails = [];
+            let processedHtml = '';
+            let hiddenFound = false;
+
+            const regex = /[a-zA-Z]|\p{C}/gu; 
+
+            let lastIndex = 0;
+            let match;
+
+            const normalizedInputText = inputText.normalize('NFC'); 
+
+            while ((match = regex.exec(normalizedInputText)) !== null) {
+                const charIndex = match.index;
+                const foundChar = match[0];
+                let charDescription = '';
+
+                processedHtml += escapeHtml(normalizedInputText.substring(lastIndex, charIndex));
+
+                if (/[a-zA-Z]/.test(foundChar)) {
+                    charDescription = `Английская буква '${foundChar}'`;
+                } else {
+                    const charCode = foundChar.charCodeAt(0);
+                    if (charCode === 0x200B) charDescription = "Zero Width Space (ZWSP)";
+                    else if (charCode === 0xFEFF) charDescription = "Byte Order Mark (BOM)"; 
+                    else if (charCode === 0x00AD) charDescription = "Soft Hyphen (SHY)"; 
+                    else if (charCode === 0x00A0) charDescription = "Non-breaking Space (NBSP)"; 
+                    else if (charCode === 0x200C) charDescription = "Zero Width Non-Joiner (ZWNJ)"; 
+                    else if (charCode === 0x200D) charDescription = "Zero Width Joiner (ZWJ)"; 
+                    else if (charCode === 0x200E) charDescription = "Left-to-Right Mark (LRM)"; 
+                    else if (charCode === 0x200F) charDescription = "Right-to-Left Mark (RLM)"; 
+                    else if (charCode >= 0x202A && charCode <= 0x202E) charDescription = `Бидирекциональный Ctrl (\\u${charCode.toString(16).toUpperCase().padStart(4, '0')})`; 
+                    else if (charCode >= 0x2060 && charCode <= 0x206F) charDescription = `Невидимый оператор (\\u${charCode.toString(16).toUpperCase().padStart(4, '0')})`; 
+                    else charDescription = `Управляющий символ (\\u${charCode.toString(16).toUpperCase().padStart(4, '0')})`;
+                }
+
+                foundCharsDetails.push({
+                    char: foundChar,
+                    description: charDescription,
+                    position: charIndex + 1
+                });
+
+                let charToDisplay = foundChar;
+                if (charDescription.includes('Space') || charDescription.includes('Mark') || charDescription.includes('Joiner')) {
+                    const hexCode = foundChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0');
+                    charToDisplay = `Ⓧ${hexCode}`;
+                } else if (/[a-zA-Z]/.test(foundChar)) {
+                    charToDisplay = foundChar; 
+                } else {
+                     const hexCode = foundChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0');
+                    charToDisplay = `Ⓧ${hexCode}`; 
+                }
+                
+                processedHtml += `<span class="highlighted-char">${escapeHtml(charToDisplay)}</span>`;
+                hiddenFound = true;
+                lastIndex = charIndex + foundChar.length;
+            }
+
+            processedHtml += escapeHtml(normalizedInputText.substring(lastIndex));
+            highlightedTextDisplay.innerHTML = processedHtml;
+
+            if (!hiddenFound) {
+                outputResults.innerHTML += '<p style="color: #ffcc00; font-family: sans-serif; font-size: 0.9em;">Английских или скрытых символов не найдено.</p>';
+                closeModal('hiddenCharsModal');
+                return;
+            }
+
+            foundCharsDetails.forEach(detail => {
+                outputResults.innerHTML += `
+                    <div class="result-block hidden-char">
+                        ${detail.description}<br>
+                        Найдено в позиции: ${detail.position}
+                    </div>
+                `;
+            });
+
+            hiddenCharsModal.style.display = 'block';
+        }
+
+        // --- 4. Поиск Упоминаний (Базовый) ---
+        function findMentions() {
+            const inputText = document.getElementById('inputTextMentions').value;
+            const outputResults = document.getElementById('outputResultsMentions');
+            const highlightedMentionsDisplay = document.getElementById('highlightedMentionsDisplay');
+            const mentionsModal = document.getElementById('mentionsModal');
+
+            outputResults.innerHTML = '<p style="color: #ffea7f; margin-bottom: 5px; font-family: \'Oswald\', sans-serif;">Результаты поиска (отображается только краткий список, полный текст с обводкой появится в новом окне):</p>';
+            highlightedMentionsDisplay.innerHTML = '';
+
+            if (!inputText.trim()) {
+                outputResults.innerHTML += '<p style="color: yellow; font-family: sans-serif; font-size: 0.9em;">Пожалуйста, введите текст для анализа.</p>';
+                return;
+            }
+
+            const mentionKeywords = [
+                'личная конференция', 'личная конфа', 'личная сронфа', 'личная сронференция', 'личные сообщения', 'личные соо',
+                'сронфу', 'сронфе', 'сронфа', 'сронференции', 'срээф', 'срф', 
+                'кф', 'конфе', 'конфу', 'конференция', 
+                'сроо', 'лс', 'личку', 'личке', 'лички', 'элэс', 'срэлэс'
+            ];
+
+            const foundMentions = [];
+            let processedHtml = '';
+            let mentionsFound = false;
+            let lastIndex = 0;
+
+            const normalizedInputText = inputText.toLowerCase().normalize('NFC');
+            
+            const sortedKeywords = mentionKeywords.sort((a, b) => b.length - a.length);
+
+            const allMatches = [];
+            
+            for (const keyword of sortedKeywords) {
+                const regexKeyword = keyword.includes(' ') ? keyword.replace(/\s+/g, '\\s+') : keyword;
+                
+                const boundaryStart = '(|[^a-z0-9а-яё_])'; 
+                const boundaryEnd = '(|[^a-z0-9а-яё_])'; 
+                
+                const regex = new RegExp(boundaryStart + escapeRegExp(regexKeyword) + boundaryEnd, 'gi');
+                let match;
+                
+                let tempIndex = 0; 
+                while ((match = regex.exec(normalizedInputText)) !== null) {
+                    const keywordIndex = match.index + match[1].length; 
+                    const keywordText = match[2] ? match[2] : match[0].substring(match[1].length, match[0].length - match[3].length);
+
+                    allMatches.push({
+                        text: keywordText,
+                        start: keywordIndex,
+                        end: keywordIndex + keywordText.length,
+                        original: keyword
+                    });
+                }
+            }
+
+            allMatches.sort((a, b) => a.start - b.start);
+
+            const uniqueMatches = [];
+            for (const match of allMatches) {
+                let isOverlap = false;
+                for (const unique of uniqueMatches) {
+                    if (match.start < unique.end && match.end > unique.start) {
+                        isOverlap = true;
+                        break;
+                    }
+                }
+                if (!isOverlap) {
+                    uniqueMatches.push(match);
+                }
+            }
+
+            for (const match of uniqueMatches) {
+                const charIndex = match.start;
+                const mentionText = match.text;
+
+                processedHtml += escapeHtml(normalizedInputText.substring(lastIndex, charIndex));
+                processedHtml += `<span class="highlighted-char mention">${escapeHtml(mentionText)}</span>`;
+                
+                lastIndex = match.end;
+                
+                foundMentions.push({
+                    text: mentionText,
+                    position: charIndex + 1
+                });
+                mentionsFound = true;
+            }
+            
+            processedHtml += escapeHtml(normalizedInputText.substring(lastIndex));
+            highlightedMentionsDisplay.innerHTML = processedHtml;
+
+
+            if (!mentionsFound) {
+                outputResults.innerHTML += '<p style="color: #ffcc00; font-family: sans-serif; font-size: 0.9em;">Упоминаний не найдено.</p>';
+                closeModal('mentionsModal');
+                return;
+            }
+
+            foundMentions.forEach(detail => {
+                outputResults.innerHTML += `
+                    <div class="result-block mention-found">
+                        Найдено упоминание: "${detail.text}"<br>
+                        В позиции: ${detail.position}
+                    </div>
+                `;
+            });
+
+            mentionsModal.style.display = 'block';
+        }
+        
+         // --- PWA Service Worker Registration (ИСПРАВЛЕННЫЙ ПУТЬ) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // Пытаемся зарегистрировать Service Worker с ОТНОСИТЕЛЬНЫМ путем
+                navigator.serviceWorker.register('./sw.js').then(function(registration) {
+                    console.log('Service Worker зарегистрирован успешно:', registration.scope);
+                }, function(err) {
+                    console.log('Ошибка регистрации Service Worker:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+ 
